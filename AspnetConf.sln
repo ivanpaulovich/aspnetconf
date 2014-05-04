@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{6DDC0D64-D25F-4AC5-B76A-3921AB549F27}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\AzureWebAppPublishModule.psm1 = PublishScripts\AzureWebAppPublishModule.psm1
+		PublishScripts\Publish-WebApplication.ps1 = PublishScripts\Publish-WebApplication.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{EFA2EF69-5004-4B39-80C8-6E8D443B49AA}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Configurations\01MovendoObjetos-WAWS-dev.json = PublishScripts\Configurations\01MovendoObjetos-WAWS-dev.json
+		PublishScripts\Configurations\MoveShapeDemo-WAWS-dev.json = PublishScripts\Configurations\MoveShapeDemo-WAWS-dev.json
+		PublishScripts\Configurations\PongR-WAWS-dev.json = PublishScripts\Configurations\PongR-WAWS-dev.json
+		PublishScripts\Configurations\S01MovendoObjetos-WAWS-dev.json = PublishScripts\Configurations\S01MovendoObjetos-WAWS-dev.json
+		PublishScripts\Configurations\S02Pong-WAWS-dev.json = PublishScripts\Configurations\S02Pong-WAWS-dev.json
+		PublishScripts\Configurations\SignalRChat-WAWS-dev.json = PublishScripts\Configurations\SignalRChat-WAWS-dev.json
+		PublishScripts\Configurations\SignalRStockticker-WAWS-dev.json = PublishScripts\Configurations\SignalRStockticker-WAWS-dev.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.Stockticker", "SignalR.Stockticker\SignalR.Stockticker.csproj", "{07F6D765-29DF-4089-8F9A-1CCC63587C34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRChat", "SignalRChat\SignalRChat.csproj", "{CDF1363C-3283-4A6D-839E-897BC2937591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveShapeDemo", "MoveShapeDemo\MoveShapeDemo.csproj", "{3F95F728-910F-4890-A132-59B302D80CBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongR", "PongR\PongR.csproj", "{65F04869-1CA2-4BFC-BCE4-04C9714DA067}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07F6D765-29DF-4089-8F9A-1CCC63587C34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F6D765-29DF-4089-8F9A-1CCC63587C34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F6D765-29DF-4089-8F9A-1CCC63587C34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F6D765-29DF-4089-8F9A-1CCC63587C34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDF1363C-3283-4A6D-839E-897BC2937591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDF1363C-3283-4A6D-839E-897BC2937591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDF1363C-3283-4A6D-839E-897BC2937591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDF1363C-3283-4A6D-839E-897BC2937591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F95F728-910F-4890-A132-59B302D80CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F95F728-910F-4890-A132-59B302D80CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F95F728-910F-4890-A132-59B302D80CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F95F728-910F-4890-A132-59B302D80CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65F04869-1CA2-4BFC-BCE4-04C9714DA067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F04869-1CA2-4BFC-BCE4-04C9714DA067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F04869-1CA2-4BFC-BCE4-04C9714DA067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F04869-1CA2-4BFC-BCE4-04C9714DA067}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EFA2EF69-5004-4B39-80C8-6E8D443B49AA} = {6DDC0D64-D25F-4AC5-B76A-3921AB549F27}
+	EndGlobalSection
+EndGlobal
