@@ -17,8 +17,8 @@ var BG = {
 };
 
 var Ball = {
-	Radius: 5,
-	Color: '#999',
+	Radius: 10,
+	Color: 'red',
 	X: 0,
 	Y: 0,
 	VelX: 0,
@@ -46,28 +46,34 @@ var Ball = {
 };
 
 function Paddle(position){
-	this.Color = '#999';
-	this.Width = 5;
+	this.Width = 10;
 	this.Height = 100;
 	this.X = 0;
 	this.Y = Height/2 - this.Height/2;
 	this.Score = 0;
 	
-	if(position == 'left')
-		this.X = 0;
-	else this.X = Width - this.Width;
-	
+	if (position == 'left')
+	{
+	    this.Color = 'blue';
+	    this.X = 0;
+	}
+	else
+	{
+	    this.Color = 'orange';
+	    this.X = Width - this.Width;
+	}
+
 	this.Paint = function(){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(this.X, this.Y, this.Width, this.Height);
 		ctx.fillStyle = this.Color;
-		ctx.font = "normal 10pt Calibri";
+		ctx.font = "normal 20pt Calibri";
 		if(position == 'left'){
 			ctx.textAlign = "left";
-			ctx.fillText("score: " + PlayerOne.Score, 10, 10);
+			ctx.fillText("score: " + PlayerOne.Score, 20, 30);
 		}else{
 			ctx.textAlign = "right";
-			ctx.fillText("score: " + PlayerTwo.Score, Width - 10, 10);
+			ctx.fillText("score: " + PlayerTwo.Score, Width - 20, 30);
 		}
 	};
 	
@@ -104,14 +110,6 @@ window.cancelRequestAnimFrame = (function () {
 var PlayerOne = new Paddle();
 var PlayerTwo = new Paddle('left');
 
-//event listener
-function MouseMove(e) {
-    var pongGame = $.connection.pongGameHub;
-    var vPos = e.pageY - PlayerOne.Height / 2;
-
-    pongGame.server.movePlayerOne(vPos)
-}
-
 function Paint(){
 	ctx.beginPath();
 	BG.Paint();
@@ -135,30 +133,25 @@ function GameOver(win){
 	ctx.fillText("refresh to reply", Width/2, Height/2 + 20);
 }
 
-function NewGame(){
-	Ball.Reset();
-	PlayerOne.Score = 0;
-	PlayerTwo.Score = 0;
-	Loop();
+function NewGame() {
 
     //attache event
-	canvas.addEventListener("mousemove", MouseMove, true);
-}
+    canvas.addEventListener("mousemove", MouseMove, true);
 
-$(function () {
+    Ball.Reset();
+    PlayerOne.Score = 0;
+    PlayerTwo.Score = 0;
+    Loop();
+
     var pongGame = $.connection.pongGameHub;
 
     pongGame.client.UpdatePositionPlayerOne = function (vPos) {
-        debugger;
         PlayerOne.Y = vPos;
     };
 
-    pongGame.client.UpdatePositionPlayerOne = function (vPos) {
-        debugger;
+    pongGame.client.UpdatePositionPlayerTwo = function (vPos) {
         PlayerTwo.Y = vPos;
     };
 
-    NewGame();
-
     $.connection.hub.start();
-});
+}
