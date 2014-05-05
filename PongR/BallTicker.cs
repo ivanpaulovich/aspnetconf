@@ -22,6 +22,9 @@ namespace PongR
         private readonly Timer _timer;
         private volatile bool _updatingBallPosition = false;
 
+        private int x = 0;
+        private int y = 0;
+
         private BallTicker(IHubConnectionContext clients)
         {
             Clients = clients;
@@ -52,7 +55,10 @@ namespace PongR
                 {
                     _updatingBallPosition = true;
 
-                    BroadcastBallPosition(100, 100);
+                    x += 1;
+                    y += 1;
+
+                    BroadcastBallPosition(x, y);
 
                     _updatingBallPosition = false;
                 }

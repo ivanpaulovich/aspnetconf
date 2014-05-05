@@ -29,12 +29,6 @@ var Ball = {
 		ctx.fillStyle = this.Color;
 		ctx.arc(this.X, this.Y, this.Radius, 0, Math.PI * 2, false);
 		ctx.fill();
-		this.Update();
-	},
-	
-	Update: function(){
-		this.X += this.VelX;
-		this.Y += this.VelY;
 	},
 			
 	Reset: function(){
@@ -151,6 +145,11 @@ function NewGame() {
 
     pongGame.client.UpdatePositionPlayerTwo = function (vPos) {
         PlayerTwo.Y = vPos;
+    };
+
+    pongGame.client.UpdateBallPosition = function (x, y) {
+        Ball.X = x;
+        Ball.Y = y;
     };
 
     $.connection.hub.start();

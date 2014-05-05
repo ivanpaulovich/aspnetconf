@@ -8,6 +8,15 @@ namespace PongR
 {
     public class PongGameHub : Hub
     {
+        private readonly BallTicker _ballTicker;
+
+        public PongGameHub() : this(BallTicker.Instance) { }
+
+        public PongGameHub(BallTicker ballTicker)
+        {
+            _ballTicker = ballTicker;
+        }
+
         public void MovePlayerOne(float vPos)
         {
             Clients.All.updatePositionPlayerOne(vPos);
