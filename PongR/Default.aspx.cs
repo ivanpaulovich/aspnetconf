@@ -16,7 +16,20 @@ namespace PongR
 
         protected string RetrievePlayer()
         {
-            return !string.IsNullOrEmpty(Request["Player"]) ? (Request["Player"] == "1" ? "PlayerOne" : "PlayerTwo") : "PlayerOne";
+            if (!string.IsNullOrEmpty(Request["Player"]))
+            { 
+                if (Request["Player"] == "1")
+                {
+                    return "PlayerOne";
+                }
+
+                if (Request["Player"] == "2")
+                { 
+                    return "PlayerTwo";
+                }
+            }
+
+            return string.Empty;
         }
 
     }

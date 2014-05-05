@@ -54,7 +54,7 @@ function Paddle(position){
 	
 	if (position == 'left')
 	{
-	    this.Color = 'blue';
+	    this.Color = 'white';
 	    this.X = 0;
 	}
 	else

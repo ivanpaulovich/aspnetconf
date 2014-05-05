@@ -16,9 +16,23 @@
             margin: 0px auto;
             border: 1px solid #000;
         }
+
+        ul {
+            margin-top: 20px;
+            width: 200px ;
+            height: 100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
+    <ul>
+        <li><a href="Default.aspx?Player=1">Jogador 1</a></li>
+        <li><a href="Default.aspx?Player=2">Jogador 2</a></li>
+        <li><a href="Default.aspx?Reset=1">Reiniciar</a></li>
+    </ul>
+
     <canvas id="game"></canvas>
     <!--Script references. -->
     <!--Reference the jQuery library. -->
@@ -29,6 +43,8 @@
     <script src="signalr/hubs"></script>
     <!--Add script to update the page and send messages.-->
     <script src="PongGame.js"></script>
+
+    <% if (!string.IsNullOrEmpty(RetrievePlayer())) { %>
 
     <script>
 
@@ -45,5 +61,8 @@
         });
 
     </script>
+
+    <% } %>
+
 </body>
 </html>
