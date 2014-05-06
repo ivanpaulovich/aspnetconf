@@ -5,8 +5,10 @@ var canvas = document.getElementById("game");
 canvas.width = Width;
 canvas.height = Height;
 canvas.setAttribute('tabindex', 1);
+
 var ctx = canvas.getContext("2d");
 var FPS = 1000 / 60;
+var keys = [];
 
 var BG = {
 	Color: '#333',
@@ -21,8 +23,8 @@ var Ball = {
 	Color: 'red',
 	X: 0,
 	Y: 0,
-	VelX: 0,
-	VelY: 0,
+	ServerX: 0,
+    ServerY: 0,
 	
 	Paint: function(){
 		ctx.beginPath();
@@ -30,12 +32,10 @@ var Ball = {
 		ctx.arc(this.X, this.Y, this.Radius, 0, Math.PI * 2, false);
 		ctx.fill();
 	},
-			
-	Reset: function(){
-		this.X = Width/2;
-		this.Y = Height/2;
-		this.VelX = (!!Math.round(Math.random() * 1) ? 1.5 : -1.5);
-		this.VelY = (!!Math.round(Math.random() * 1) ? 1.5 : -1.5);
+
+	Interpolate: function(deltaTime){
+	    this.X = this.ServerX; //(this.ServerX - this.X) * deltaTime * elapsedSeconds;
+	    this.Y = this.ServerY; //(this.ServerY - this.Y) * deltaTime * elapsedSeconds;
 	}
 };
 
@@ -43,8 +43,7 @@ function Paddle(position){
 	this.Width = 10;
 	this.Height = 100;
 	this.X = 0;
-	this.Y = Height/2 - this.Height/2;
-	this.Score = 0;
+	this.Y = 0;
 	
 	if (position == 'left')
 	{
@@ -61,22 +60,6 @@ function Paddle(position){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(this.X, this.Y, this.Width, this.Height);
 		ctx.fillStyle = this.Color;
-		ctx.font = "normal 20pt Calibri";
-		if(position == 'left'){
-			ctx.textAlign = "left";
-			ctx.fillText("score: " + PlayerOne.Score, 20, 30);
-		}else{
-			ctx.textAlign = "right";
-			ctx.fillText("score: " + PlayerTwo.Score, Width - 20, 30);
-		}
-	};
-	
-	this.IsCollision = function () {
-		if (Ball.X - Ball.Radius > this.Width + this.X || this.X > Ball.Radius * 2 + Ball.X - Ball.Radius) 
-			return false;
-		if (Ball.Y - Ball.Radius > this.Height + this.Y || this.Y > Ball.Radius * 2 + Ball.Y - Ball.Radius) 
-			return false;
-	  return true;
 	};
 };
 
@@ -101,8 +84,10 @@ window.cancelRequestAnimFrame = (function () {
 )();
 
 //game
-var PlayerOne = new Paddle();
-var PlayerTwo = new Paddle('left');
+var PlayerOne = new Paddle('left');
+var PlayerTwo = new Paddle();
+
+var elapsedSeconds;
 
 function Paint(){
 	ctx.beginPath();
@@ -112,45 +97,43 @@ function Paint(){
 	Ball.Paint();
 }
 
+var last = new Date();
+
 function Loop() {
     init = requestAnimFrame(Loop);
+
+    PlayerMove();
+
+    Ball.Interpolate();
+
     Paint();
 };
 
-function GameOver(win){
-	BG.Paint();
-	ctx.fillStyle = "#999";
-	ctx.font = "bold 40px Calibri";
-	ctx.textAlign = "center";
-	ctx.fillText((win ? "A WINNER IS YOU" : "GAME OVER"), Width/2, Height/2);
-	ctx.font = "normal 16px Calibri";
-	ctx.fillText("refresh to reply", Width/2, Height/2 + 20);
-}
-
 function NewGame() {
 
-    //attache event
-    canvas.addEventListener("mousemove", MouseMove, true);
-
-    Ball.Reset();
-    PlayerOne.Score = 0;
-    PlayerTwo.Score = 0;
     Loop();
 
     var pongGame = $.connection.pongGameHub;
 
-    pongGame.client.UpdatePositionPlayerOne = function (vPos) {
-        PlayerOne.Y = vPos;
-    };
+    pongGame.client.updatePositions = function (x, y, playerOneY, playerTwoY) {
 
-    pongGame.client.UpdatePositionPlayerTwo = function (vPos) {
-        PlayerTwo.Y = vPos;
-    };
+        var now = new Date();
+        elapsedSeconds = (now - last) / 1000;
+        last = now;
 
-    pongGame.client.UpdateBallPosition = function (x, y) {
-        Ball.X = x;
-        Ball.Y = y;
+        Ball.ServerX = x;
+        Ball.ServerY = y;
+        PlayerOne.Y = playerOneY;
+        PlayerTwo.Y = playerTwoY;
     };
 
     $.connection.hub.start();
 }
+
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});

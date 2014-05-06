@@ -30,7 +30,6 @@
     <ul>
         <li><a href="Default.aspx?Player=1">Jogador 1</a></li>
         <li><a href="Default.aspx?Player=2">Jogador 2</a></li>
-        <li><a href="Default.aspx?Reset=1">Reiniciar</a></li>
     </ul>
 
     <canvas id="game"></canvas>
@@ -48,12 +47,16 @@
 
     <script>
 
-        //event listener
-        function MouseMove(e) {
+        function PlayerMove() {
             var pongGame = $.connection.pongGameHub;
-            var vPos = e.pageY - <%= RetrievePlayer() %>.Height / 2;
+            
+            if (keys[38]) {
+                pongGame.server.move<%= RetrievePlayer() %>Up();
+            }
 
-            pongGame.server.move<%= RetrievePlayer() %>(vPos)
+            if (keys[40]) {
+                pongGame.server.move<%= RetrievePlayer() %>Down();
+            }
         }
 
         $(function () {
