@@ -95,7 +95,7 @@ namespace PongR
                             if (ServerY >= PlayerOneY && ServerY <= PlayerOneY + PlayerHeight)
                             {
                                 //Bateu na pá
-                                VelX = VelX * -1.5f;
+                                VelX = VelX * -1.2f;
                             }
                         }
 
@@ -104,7 +104,7 @@ namespace PongR
                             if (ServerY >= PlayerTwoY && ServerY <= PlayerTwoY + PlayerHeight)
                             {
                                 //Bateu na pá
-                                VelX = VelX * -1.5f;
+                                VelX = VelX * -1.2f;
                             }
                         }
                     }
