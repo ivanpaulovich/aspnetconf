@@ -1,4 +1,3 @@
-//canvas
 var Width = 800;
 var Height = 450;
 var canvas = document.getElementById("game");
@@ -11,7 +10,7 @@ var FPS = 1000 / 60;
 var keys = [];
 
 var BG = {
-	Color: '#333',
+	Color: 'black',
 	Paint: function(){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(0, 0, Width, Height);
@@ -19,7 +18,7 @@ var BG = {
 };
 
 var Ball = {
-	Radius: 10,
+	Radius: 20,
 	Color: 'red',
 	X: 0,
 	Y: 0,
@@ -33,33 +32,54 @@ var Ball = {
 		ctx.fill();
 	},
 
-	Interpolate: function(deltaTime){
-	    this.X = this.ServerX; //(this.ServerX - this.X) * deltaTime * elapsedSeconds;
-	    this.Y = this.ServerY; //(this.ServerY - this.Y) * deltaTime * elapsedSeconds;
+	Interpolate: function (deltaTime) {
+	    if (this.ServerX - this.X < 1) {
+	        this.X = this.ServerX;
+	    }
+	    else {
+	        this.X += (this.ServerX - this.X) * deltaTime;
+	    }
+
+	    if (this.ServerY - this.Y < 1) {
+	        this.Y = this.ServerY;
+	    }
+	    else {
+	        this.Y += (this.ServerY - this.Y) * deltaTime;
+	    }
 	}
 };
 
 function Paddle(position){
-	this.Width = 10;
+	this.Width = 20;
 	this.Height = 100;
 	this.X = 0;
 	this.Y = 0;
-	
+    this.ServerY = 0;
+
 	if (position == 'left')
 	{
 	    this.Color = 'white';
-	    this.X = 0;
+	    this.X = 5;
 	}
 	else
 	{
 	    this.Color = 'orange';
-	    this.X = Width - this.Width;
+	    this.X = Width - this.Width - 5;
 	}
 
 	this.Paint = function(){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(this.X, this.Y, this.Width, this.Height);
 		ctx.fillStyle = this.Color;
+	};
+
+	this.Interpolate = function (deltaTime) {
+	    if (this.ServerY - this.Y < 1) {
+	        this.Y = this.ServerY;
+	    }
+	    else {
+	        this.Y += (this.ServerY - this.Y) * deltaTime;
+	    }
 	};
 };
 
@@ -87,7 +107,8 @@ window.cancelRequestAnimFrame = (function () {
 var PlayerOne = new Paddle('left');
 var PlayerTwo = new Paddle();
 
-var elapsedSeconds;
+var elapsed;
+var lastTime = new Date();
 
 function Paint(){
 	ctx.beginPath();
@@ -97,14 +118,14 @@ function Paint(){
 	Ball.Paint();
 }
 
-var last = new Date();
-
 function Loop() {
     init = requestAnimFrame(Loop);
 
     PlayerMove();
 
-    Ball.Interpolate();
+    Ball.Interpolate(elapsed);
+    PlayerOne.Interpolate(elapsed);
+    PlayerTwo.Interpolate(elapsed);
 
     Paint();
 };
@@ -115,16 +136,21 @@ function NewGame() {
 
     var pongGame = $.connection.pongGameHub;
 
-    pongGame.client.updatePositions = function (x, y, playerOneY, playerTwoY) {
+    pongGame.client.updatePositions = function (serverX, serverY, playerOneY, playerTwoY) {
 
-        var now = new Date();
-        elapsedSeconds = (now - last) / 1000;
-        last = now;
+        var current = new Date();
+        elapsed = (current - lastTime) / 1000;
+        lastTime = current;
 
-        Ball.ServerX = x;
-        Ball.ServerY = y;
-        PlayerOne.Y = playerOneY;
-        PlayerTwo.Y = playerTwoY;
+        Ball.ServerX = serverX;
+        Ball.ServerY = serverY;
+        PlayerOne.ServerY = playerOneY;
+        PlayerTwo.ServerY = playerTwoY;
+    };
+
+    pongGame.client.reset = function (serverX, serverY) {
+        Ball.X = serverX;
+        Ball.Y = serverY;
     };
 
     $.connection.hub.start();
