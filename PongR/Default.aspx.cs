@@ -20,12 +20,12 @@ namespace PongR
             { 
                 if (Request["Player"] == "1")
                 {
-                    return "PlayerOne";
+                    return "Paddle1";
                 }
 
                 if (Request["Player"] == "2")
-                { 
-                    return "PlayerTwo";
+                {
+                    return "Paddle2";
                 }
             }
 

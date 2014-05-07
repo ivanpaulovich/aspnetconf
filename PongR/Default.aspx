@@ -9,17 +9,24 @@
         * {
             margin: 0px;
             padding: 0px;
+            background-color: black;
         }
 
         canvas {
+            background-color: white;
             display: block;
             margin: 0px auto;
-            border: 1px solid #000;
+            border-top: 20px solid orange;
+            border-bottom: 20px solid orange;
+            border-left: 20px solid gray;
+            border-right: 20px solid gray;
+            width: 800px;
+            height: 450px;
         }
 
         ul {
             margin-top: 20px;
-            width: 200px ;
+            width: 200px;
             height: 100px;
             margin-left: auto;
             margin-right: auto;
@@ -47,7 +54,7 @@
 
     <script>
 
-        function PlayerMove() {
+        function CaptureInput() {
             var pongGame = $.connection.pongGameHub;
             
             if (keys[38]) {

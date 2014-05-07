@@ -1,3 +1,4 @@
+var debug = true;
 var Width = 800;
 var Height = 450;
 var canvas = document.getElementById("game");
@@ -6,46 +7,82 @@ canvas.height = Height;
 canvas.setAttribute('tabindex', 1);
 
 var ctx = canvas.getContext("2d");
-var FPS = 1000 / 60;
+var FPS = 1000 / 60; // FPS desejado em caso de usar o setInterval
 var keys = [];
 
-var BG = {
-	Color: 'black',
+//game
+var Paddle1 = new Paddle('left');
+var Paddle2 = new Paddle();
+var lastRenderTime = new Date();
+var elapsedUpdateTime;
+var lastTime = new Date();
+var delayTime = 0.0;
+var FPS = 0;
+var countFPS = 0;
+
+var Table = {
+    Color: 'white',
+
 	Paint: function(){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(0, 0, Width, Height);
 	}
 };
 
-var Ball = {
+var Disk = {
 	Radius: 20,
 	Color: 'red',
 	X: 0,
 	Y: 0,
 	ServerX: 0,
-    ServerY: 0,
+	ServerY: 0,
+	DistY: 0,
+    DistY: 0,
 	
 	Paint: function(){
 		ctx.beginPath();
 		ctx.fillStyle = this.Color;
 		ctx.arc(this.X, this.Y, this.Radius, 0, Math.PI * 2, false);
 		ctx.fill();
+
+		if (debug) {
+		    ctx.fillStyle = 'black';
+		    ctx.textAlign = "left";
+		    ctx.fillText("Y: " + this.Y, Width / 2, 10);
+		    ctx.fillText("ServerY: " + this.ServerY, Width / 2, 25);
+		    ctx.fillText("VelY: " + this.VelY, Width / 2, 40);
+		}
 	},
 
-	Interpolate: function (deltaTime) {
-	    if (this.ServerX - this.X < 1) {
+	Update: function (delta) {
+	    var distX = this.ServerX - this.X;
+
+	    if (Math.abs(distX) < 1) {
+	        this.DistX = 0;
 	        this.X = this.ServerX;
 	    }
-	    else {
-	        this.X += (this.ServerX - this.X) * deltaTime;
-	    }
+	    else
+	        this.X += this.DistX / (delta != 0 ? delta : 1);
 
-	    if (this.ServerY - this.Y < 1) {
+	    var distY = this.ServerY - this.Y;
+
+	    if (Math.abs(distY) < 1)
+	    {
+	        this.DistY = 0;
 	        this.Y = this.ServerY;
 	    }
-	    else {
-	        this.Y += (this.ServerY - this.Y) * deltaTime;
-	    }
+	    else
+	        this.Y += this.DistY / (delta != 0 ? delta : 1);
+	},
+
+	Move: function (serverX, serverY) {
+	    this.ServerX = serverX;
+	    var distX = this.ServerX - this.X;
+	    this.DistX = distX;
+
+	    this.ServerY = serverY;
+	    var distY = this.ServerY - this.Y;
+	    this.DistY = distY;
 	}
 };
 
@@ -54,16 +91,17 @@ function Paddle(position){
 	this.Height = 100;
 	this.X = 0;
 	this.Y = 0;
-    this.ServerY = 0;
+	this.DistY = 0;
+	this.ServerY = 0;
 
 	if (position == 'left')
 	{
-	    this.Color = 'white';
+	    this.Color = 'blue';
 	    this.X = 5;
 	}
 	else
 	{
-	    this.Color = 'orange';
+	    this.Color = 'green';
 	    this.X = Width - this.Width - 5;
 	}
 
@@ -71,18 +109,125 @@ function Paddle(position){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(this.X, this.Y, this.Width, this.Height);
 		ctx.fillStyle = this.Color;
+
+		if (debug) {
+		    ctx.fillStyle = 'black';
+		    ctx.font = "normal 10pt Calibri";
+
+		    if (position == 'left') {
+		        ctx.textAlign = "left";
+		        ctx.fillText("Y: " + this.Y, this.X, 10);
+		        ctx.fillText("VelY: " + this.VelY, this.X, 25);
+		    }
+		    else {
+		        ctx.textAlign = "right";
+		        ctx.fillText("Y: " + this.Y, this.X + this.Width, 10);
+		        ctx.fillText("VelY: " + this.DistY, this.X + this.Width, 25);
+		    }
+		}
 	};
 
-	this.Interpolate = function (deltaTime) {
-	    if (this.ServerY - this.Y < 1) {
+	this.Update = function (delta) {
+	    var distY = this.ServerY - this.Y;
+
+	    if (Math.abs(distY) < 1)
+	    {
+	        this.DistY = 0;
 	        this.Y = this.ServerY;
 	    }
-	    else {
-	        this.Y += (this.ServerY - this.Y) * deltaTime;
-	    }
+	    else
+	        this.Y += this.DistY / (delta != 0 ? delta : 1);
+	};
+
+	this.Move = function (serverY) {
+	    this.ServerY = serverY;
+	    var distY = this.ServerY - this.Y;
+	    this.DistY = distY;
 	};
 };
 
+function Paint(){
+	ctx.beginPath();
+	Table.Paint();
+	Paddle1.Paint();
+	Paddle2.Paint();
+	Disk.Paint();
+}
+
+function Loop() {
+    init = requestAnimFrame(Loop);
+
+    countFPS++;
+
+    CaptureInput();
+
+    Disk.Update(FPS);
+    Paddle1.Update(FPS);
+    Paddle2.Update(FPS);
+
+    Paint();
+
+    if (debug) {
+        ctx.fillStyle = 'black';
+        ctx.textAlign = "left";
+        ctx.fillText("FPS: " + FPS, 5, Height - 30);
+        ctx.fillText("Delay " + delayTime, 5, Height - 15);
+    }
+};
+
+function NewGame() {
+
+    //
+    // Define que o servidor pode chamar as operações "updatePositions" e "reset"
+    //
+    var pongGame = $.connection.pongGameHub;
+
+    pongGame.client.updatePositions = function (diskX, diskY, paddle1Y, paddle2Y) {
+
+        //
+        // Cálculo de tempo gasto para trocar mensagens com o servidor
+        //
+        var currentTime = new Date();
+        delayTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        FPS = countFPS;
+        countFPS = 0;
+
+        Disk.Move(diskX, diskY);
+        Paddle1.Move(paddle1Y);
+        Paddle2.Move(paddle2Y);
+    };
+
+    pongGame.client.reset = function (diskX, diskY) {
+        Disk.X = diskX;
+        Disk.Y = diskY;
+
+        Loop();
+    };
+
+    //
+    // Inicia a comunicação
+    //
+    $.connection.hub.start();
+}
+
+//
+// Captura todas as teclas 
+//
+
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
+
+//
+// Captura a função do navegador que é chamada todas as vezes que 
+// algo pode ser desenhado na tela
+//
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame
 	|| window.webkitRequestAnimationFrame
@@ -102,64 +247,3 @@ window.cancelRequestAnimFrame = (function () {
 			|| clearTimeout
 }
 )();
-
-//game
-var PlayerOne = new Paddle('left');
-var PlayerTwo = new Paddle();
-
-var elapsed;
-var lastTime = new Date();
-
-function Paint(){
-	ctx.beginPath();
-	BG.Paint();
-	PlayerOne.Paint();
-	PlayerTwo.Paint();
-	Ball.Paint();
-}
-
-function Loop() {
-    init = requestAnimFrame(Loop);
-
-    PlayerMove();
-
-    Ball.Interpolate(elapsed);
-    PlayerOne.Interpolate(elapsed);
-    PlayerTwo.Interpolate(elapsed);
-
-    Paint();
-};
-
-function NewGame() {
-
-    Loop();
-
-    var pongGame = $.connection.pongGameHub;
-
-    pongGame.client.updatePositions = function (serverX, serverY, playerOneY, playerTwoY) {
-
-        var current = new Date();
-        elapsed = (current - lastTime) / 1000;
-        lastTime = current;
-
-        Ball.ServerX = serverX;
-        Ball.ServerY = serverY;
-        PlayerOne.ServerY = playerOneY;
-        PlayerTwo.ServerY = playerTwoY;
-    };
-
-    pongGame.client.reset = function (serverX, serverY) {
-        Ball.X = serverX;
-        Ball.Y = serverY;
-    };
-
-    $.connection.hub.start();
-}
-
-document.body.addEventListener("keydown", function (e) {
-    keys[e.keyCode] = true;
-});
-
-document.body.addEventListener("keyup", function (e) {
-    keys[e.keyCode] = false;
-});

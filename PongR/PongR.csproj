@@ -84,6 +84,7 @@
     <None Include="Properties\PublishProfiles\PongAspNet.pubxml" />
     <Content Include="PongGame.js" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <None Include="Properties\PublishProfiles\pongbr.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -110,7 +111,7 @@
     <Compile Include="PongGameHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="BallTicker.cs" />
+    <Compile Include="PongGameTicker.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

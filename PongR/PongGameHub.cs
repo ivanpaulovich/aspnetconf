@@ -8,33 +8,33 @@ namespace PongR
 {
     public class PongGameHub : Hub
     {
-        private readonly BallTicker ballTicker;
+        private readonly PongGameTicker ballTicker;
 
-        public PongGameHub() : this(BallTicker.Instance) { }
+        public PongGameHub() : this(PongGameTicker.Instance) { }
 
-        public PongGameHub(BallTicker _ballTicker)
+        public PongGameHub(PongGameTicker _ballTicker)
         {
             ballTicker = _ballTicker;
         }
 
-        public void MovePlayerOneUp()
+        public void MovePaddle1Up()
         {
-            ballTicker.PlayerOneUp();
+            ballTicker.Paddle1Up();
         }
 
-        public void MovePlayerOneDown()
+        public void MovePaddle1Down()
         {
-            ballTicker.PlayerOneDown();
+            ballTicker.Paddle1Down();
         }
 
-        public void MovePlayerTwoUp()
+        public void MovePaddle2Up()
         {
-            ballTicker.PlayerTwoUp();
+            ballTicker.Paddle2Up();
         }
 
-        public void MovePlayerTwoDown()
+        public void MovePaddle2Down()
         {
-            ballTicker.PlayerTwoDown();
+            ballTicker.Paddle2Down();
         }
     }
 }
