@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 var Width = 800;
 var Height = 450;
 var canvas = document.getElementById("game");
@@ -26,6 +26,16 @@ var Table = {
 	Paint: function(){
 		ctx.fillStyle = this.Color;
 		ctx.fillRect(0, 0, Width, Height);
+
+		ctx.fillStyle = 'red';
+		ctx.fillRect((Width / 2) - 1, 0, 4, Height);
+
+		ctx.beginPath();
+		ctx.fillStyle = 'red';
+		ctx.arc(Width / 2, Height / 2, 50, 0, Math.PI * 2, false);
+		ctx.lineWidth = 3;
+		ctx.strokeStyle = 'red';
+		ctx.stroke();
 	}
 };
 
@@ -40,7 +50,8 @@ var Disk = {
     DistY: 0,
 	
 	Paint: function(){
-		ctx.beginPath();
+	    ctx.beginPath();
+
 		ctx.fillStyle = this.Color;
 		ctx.arc(this.X, this.Y, this.Radius, 0, Math.PI * 2, false);
 		ctx.fill();
@@ -182,7 +193,7 @@ function NewGame() {
     //
     var pongGame = $.connection.pongGameHub;
 
-    pongGame.client.updatePositions = function (diskX, diskY, paddle1Y, paddle2Y) {
+    pongGame.client.updatePositions = function (diskX, diskY, paddle1Y, paddle2Y, table, paddle, reset) {
 
         //
         // Cálculo de tempo gasto para trocar mensagens com o servidor
@@ -197,6 +208,15 @@ function NewGame() {
         Disk.Move(diskX, diskY);
         Paddle1.Move(paddle1Y);
         Paddle2.Move(paddle2Y);
+
+        if (table)
+            document.getElementById('tableMP3').play();
+
+        if (paddle)
+            document.getElementById('paddleMP3').play();
+
+        if (reset)
+            document.getElementById('resetMP3').play();
     };
 
     pongGame.client.reset = function (diskX, diskY) {

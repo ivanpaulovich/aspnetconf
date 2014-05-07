@@ -22,6 +22,7 @@
             border-right: 20px solid gray;
             width: 800px;
             height: 450px;
+            margin-top: 50px;
         }
 
         ul {
@@ -31,15 +32,25 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        ul li { display: inline; }
+
+        a {
+            padding: 10px 15px;
+            background: #4479BA;
+            color: #FFF;
+        }
     </style>
 </head>
 <body>
+
+    <canvas id="game"></canvas>
+
     <ul>
         <li><a href="Default.aspx?Player=1">Jogador 1</a></li>
         <li><a href="Default.aspx?Player=2">Jogador 2</a></li>
     </ul>
 
-    <canvas id="game"></canvas>
     <!--Script references. -->
     <!--Reference the jQuery library. -->
     <script src="Scripts/jquery-1.10.2.min.js"></script>
@@ -73,6 +84,10 @@
     </script>
 
     <% } %>
+
+    <audio id="tableMP3" src="Sounds/table.mp3" preload="auto"></audio>
+    <audio id="paddleMP3" src="Sounds/paddle.mp3" preload="auto"></audio>
+    <audio id="resetMP3" src="Sounds/reset.mp3" preload="auto"></audio>
 
 </body>
 </html>
