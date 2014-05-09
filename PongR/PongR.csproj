@@ -112,9 +112,9 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="PongGameHub.cs" />
+    <Compile Include="PongGameTicker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="PongGameTicker.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
